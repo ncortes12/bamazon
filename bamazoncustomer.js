@@ -14,9 +14,18 @@ var connection = mysql.createConnection({
     database: mySqlKey.database
     
 });
+function showItems(){
+    connection.query("SELECT * FROM products" , function (err,res){
+        if (err) throw err;
+        console.log(res);
+    })
+
+}
 
 connection.connect(function (err){
     if (err) throw err;
     console.log("Connected to "+ connection.config.database);
+
+    showItems();
 
 })
