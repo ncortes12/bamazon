@@ -28,12 +28,19 @@ function startStore() {
             type: "confirm",
             message: "Would you like to purchase an item?",
             name: "confirm",
-            default: true
+            default: false
         }
-    ]).then(function () {
-        if ("confirm") {
+    ]).then(function (answer) {
+       
+        if (answer.confirm) {
             chooseItems()
+            answer.confirm = false;
 
+        }
+        else {
+            
+            console.log("Have a great day")
+            connection.end();
         }
     })
 }
@@ -69,7 +76,7 @@ function chooseItems() {
             }
 
         ]).then(function (answer) {
-            // console.log(answer);
+            console.log(answer);
             connection.query("SELECT * FROM products WHERE ?", { product_name: answer.choice }, function (err, res) {
                 if (err) throw err;
                 // console.log(res);
