@@ -76,7 +76,7 @@ function chooseItems() {
             }
 
         ]).then(function (answer) {
-            console.log(answer);
+            // console.log(answer);
             connection.query("SELECT * FROM products WHERE ?", { product_name: answer.choice }, function (err, res) {
                 if (err) throw err;
                 // console.log(res);
@@ -112,7 +112,9 @@ function updateInventory(answer) {
     connection.query("UPDATE products SET ? WHERE ?",
         [
             {
-                stock_quantity: newQuantity
+                stock_quantity: newQuantity,
+                product_sales: cost
+
             },
             {
                 product_name: answer.choice

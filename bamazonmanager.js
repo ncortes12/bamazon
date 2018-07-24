@@ -3,6 +3,8 @@ var keys = require('./keys.js');
 var mysql = require('mysql');
 var inquirer = require('inquirer');
 var mySqlKey = keys.mySQL
+var newStock = 0;
+
 
 var connection = mysql.createConnection({
     host: mySqlKey.host,
@@ -19,6 +21,8 @@ connection.connect(function (err, res) {
 })
 
 function startProgram() {
+    console.log(newStock);
+    newStock =0;
     inquirer.prompt({
         name: "choose",
         type: "list",
@@ -107,12 +111,13 @@ function addStock() {
             }
 
         ]).then(function (answer) {
-            connection.query("UPDATE products SET ? WHERE ?", [{ stock_quantity: answer.quantity },
+            newStock = res[0].stock_quantity + answer.quantity;
+            connection.query("UPDATE products SET ? WHERE ?", [{ stock_quantity: newStock },
             {
                 product_name: answer.choice
             }], function (err, res) {
                 if (err) throw err;
-                console.log("You added " + answer.quantity + " to " + answer.choice);
+                console.log("You added " + answer.quantity + " to " + answer.choice + ". You now have " + newStock + " on hand.");
                 startProgram();
             })
 
