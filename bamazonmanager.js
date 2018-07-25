@@ -4,6 +4,8 @@ var mysql = require('mysql');
 var inquirer = require('inquirer');
 var mySqlKey = keys.mySQL
 var newStock = 0;
+var databaseStock = 0;
+
 
 
 var connection = mysql.createConnection({
@@ -21,8 +23,8 @@ connection.connect(function (err, res) {
 })
 
 function startProgram() {
-    console.log(newStock);
-    newStock =0;
+   
+   
     inquirer.prompt({
         name: "choose",
         type: "list",
@@ -84,9 +86,10 @@ function lowInventory() {
 }
 
 function addStock() {
+   
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
-
+       
 
         inquirer.prompt([
 
@@ -111,7 +114,27 @@ function addStock() {
             }
 
         ]).then(function (answer) {
-            newStock = res[0].stock_quantity + answer.quantity;
+            connection.query("SELECT stock_quantity FROM products WHERE ?",{product_name: answer.choice}, function (err,res){
+                if (err) throw err;
+                // console.log(res);
+                databaseStock = res[0].stock_quantity;
+                // console.log(res[0].stock_quantity);
+                
+            })
+             var numAnswer = Number(answer.quantity);
+
+            // console.log(databaseStock);
+           
+            
+            //checking what my variables are
+            //   var check =  typeof(res[0].stock_quantity);
+            //           var check2 = typeof(numAnswer);
+            //           console.log(check, check2);
+            // console.log(numAnswer);
+            // console.log(res[0].stock_quantity);
+                    
+            newStock = databaseStock + numAnswer;
+            // console.log(newStock);
             connection.query("UPDATE products SET ? WHERE ?", [{ stock_quantity: newStock },
             {
                 product_name: answer.choice
